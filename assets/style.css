@@ -1,0 +1,149 @@
+/* ===========================================================
+   College Club & Event Management System — custom theme
+   Dark blue / purple, card-based, modern college portal look
+   =========================================================== */
+
+:root {
+    --primary: #6C63FF;
+    --primary-dark: #4B3FBF;
+    --secondary: #1E2A4A;
+    --bg-dark: #0F1530;
+    --bg-panel: #161B33;
+    --accent: #00D4B8;
+    --text-light: #EAEAF5;
+    --text-muted: #9BA1C9;
+    --success: #2ECC71;
+    --warning: #F5A623;
+    --danger: #FF5C7A;
+}
+
+/* App background */
+.stApp {
+    background: linear-gradient(160deg, #0F1530 0%, #161B33 45%, #1B2145 100%);
+    color: var(--text-light);
+}
+
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #12163045 0%, #1B2145 100%);
+    border-right: 1px solid rgba(255,255,255,0.06);
+}
+section[data-testid="stSidebar"] * {
+    color: var(--text-light) !important;
+}
+
+/* Headings */
+h1, h2, h3, h4 {
+    color: var(--text-light) !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.02em;
+}
+
+/* Generic card */
+.cc-card {
+    background: linear-gradient(145deg, rgba(108,99,255,0.10), rgba(255,255,255,0.03));
+    border: 1px solid rgba(108,99,255,0.25);
+    border-radius: 16px;
+    padding: 20px 22px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.25);
+}
+.cc-card:hover {
+    border-color: rgba(108,99,255,0.55);
+}
+
+.cc-card h3 {
+    margin-top: 0 !important;
+    margin-bottom: 6px !important;
+    color: var(--text-light) !important;
+}
+
+.cc-badge {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+.badge-approved { background: rgba(46,204,113,0.18); color: #4ADE80; border: 1px solid rgba(46,204,113,0.4); }
+.badge-pending  { background: rgba(245,166,35,0.18); color: #FBBF24; border: 1px solid rgba(245,166,35,0.4); }
+.badge-rejected { background: rgba(255,92,122,0.18); color: #FB7185; border: 1px solid rgba(255,92,122,0.4); }
+.badge-category { background: rgba(108,99,255,0.20); color: #A5A0FF; border: 1px solid rgba(108,99,255,0.4); }
+
+.cc-meta {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    margin: 2px 0;
+}
+
+/* Metric cards */
+div[data-testid="stMetric"] {
+    background: linear-gradient(145deg, rgba(108,99,255,0.14), rgba(0,212,184,0.05));
+    border: 1px solid rgba(108,99,255,0.25);
+    border-radius: 14px;
+    padding: 14px 16px 8px 16px;
+}
+div[data-testid="stMetricLabel"] { color: var(--text-muted) !important; }
+div[data-testid="stMetricValue"] { color: var(--text-light) !important; }
+
+/* Buttons */
+.stButton > button {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 0.5rem 1.1rem;
+    font-weight: 600;
+    transition: transform 0.08s ease, box-shadow 0.15s ease;
+    box-shadow: 0 3px 10px rgba(108,99,255,0.28);
+}
+.stButton > button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(108,99,255,0.4);
+    color: white;
+}
+.stButton > button:active { transform: translateY(0); }
+
+/* Login page hero */
+.cc-login-hero {
+    text-align: center;
+    padding: 18px 0 8px 0;
+}
+.cc-login-hero h1 {
+    font-size: 2.2rem !important;
+    background: linear-gradient(90deg, #A5A0FF, #00D4B8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px !important;
+}
+.cc-login-hero p {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    letter-spacing: 0.04em;
+}
+
+.cc-demo-box {
+    background: rgba(0,212,184,0.08);
+    border: 1px dashed rgba(0,212,184,0.5);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 0.88rem;
+    color: var(--text-light);
+    margin-top: 10px;
+}
+
+/* Tables */
+[data-testid="stDataFrame"] { border-radius: 12px; overflow: hidden; }
+
+/* Tabs */
+button[data-baseweb="tab"] { color: var(--text-muted); font-weight: 600; }
+button[data-baseweb="tab"][aria-selected="true"] { color: var(--accent) !important; }
+
+/* Divider spacing tweak */
+hr { border-color: rgba(255,255,255,0.08); }
+
+/* Progress bar (seats filled) */
+.stProgress > div > div { background: linear-gradient(90deg, var(--primary), var(--accent)); }
