@@ -26,7 +26,8 @@ def render():
             with col2:
                 event_time = st.text_input("Time (e.g. 10:00 AM)")
             venue = st.text_input("Venue")
-            capacity = st.number_input("Capacity *", min_value=1, value=50, step=1)
+            capacity = st.number_input("Capacity *", min_value=0, value=50, step=1,
+                                       help="Set to 0 to close registration.")
 
             submitted = st.form_submit_button("Create Event")
             if submitted:
@@ -35,16 +36,20 @@ def render():
                     errors.append("Event title cannot be empty.")
                 if not club_name:
                     errors.append("Please select a club.")
-                if capacity <= 0:
-                    errors.append("Capacity must be greater than 0.")
+                if capacity < 0:
+                    errors.append("Capacity cannot be negative.")
                 if errors:
                     for err in errors:
                         st.error(err)
                 else:
-                    db.create_event(title.strip(), description.strip(), club_options[club_name],
-                                     event_date.isoformat(), event_time.strip(), venue.strip(), int(capacity))
-                    st.success(f"Event '{title}' created successfully!")
-                    st.rerun()
+                    try:
+                        db.create_event(title.strip(), description.strip(), club_options[club_name],
+                                         event_date.isoformat(), event_time.strip(), venue.strip(), int(capacity))
+                    except ValueError as exc:
+                        st.error(str(exc))
+                    else:
+                        st.success(f"Event '{title}' created successfully!")
+                        st.rerun()
 
     with tab2:
         events = db.get_events()
@@ -102,7 +107,8 @@ def render():
                         new_date = st.date_input("Date", value=current_date)
                         new_time = st.text_input("Time", value=e.get("time") or "")
                         new_venue = st.text_input("Venue", value=e.get("venue") or "")
-                        new_capacity = st.number_input("Capacity", min_value=1, value=max(e["capacity"], 1), step=1)
+                        new_capacity = st.number_input("Capacity", min_value=0, value=e["capacity"], step=1,
+                                                       help="Set to 0 to close registration if no students are registered.")
 
                         s1, s2 = st.columns(2)
                         with s1:
@@ -116,12 +122,16 @@ def render():
                             elif new_capacity < reg_count:
                                 st.error(f"Capacity can't be lower than current registrations ({reg_count}).")
                             else:
-                                db.update_event(e["id"], new_title.strip(), new_desc.strip(),
-                                                 club_options[new_club], new_date.isoformat(),
-                                                 new_time.strip(), new_venue.strip(), int(new_capacity))
-                                st.session_state[edit_key] = False
-                                st.success("Event updated successfully!")
-                                st.rerun()
+                                try:
+                                    db.update_event(e["id"], new_title.strip(), new_desc.strip(),
+                                                     club_options[new_club], new_date.isoformat(),
+                                                     new_time.strip(), new_venue.strip(), int(new_capacity))
+                                except ValueError as exc:
+                                    st.error(str(exc))
+                                else:
+                                    st.session_state[edit_key] = False
+                                    st.success("Event updated successfully!")
+                                    st.rerun()
                         if cancel:
                             st.session_state[edit_key] = False
                             st.rerun()

@@ -6,6 +6,8 @@ Run with:  streamlit run app.py
 """
 
 import os
+import logging
+import sqlite3
 import streamlit as st
 
 import database as db
@@ -47,7 +49,15 @@ def load_css():
 # ----------------------------------------------------------------------
 # Bootstrap
 # ----------------------------------------------------------------------
-db.init_db()
+try:
+    db.init_db()
+except (OSError, sqlite3.Error, RuntimeError, ValueError):
+    logging.getLogger(__name__).exception("Database initialization failed")
+    st.error(
+        "Database setup could not be completed. Ask the project owner to check "
+        "the server logs and follow the database troubleshooting steps in README.md."
+    )
+    st.stop()
 auth.init_session_state()
 load_css()
 
@@ -65,6 +75,11 @@ def login_screen():
 
     _, center, _ = st.columns([1, 1.4, 1])
     with center:
+        if not db.has_admin():
+            st.info(
+                "Administrator setup is pending. The project owner should follow "
+                "the administrator setup steps in README.md."
+            )
         tab_login, tab_register = st.tabs(["🔐 Login", "📝 Create Student Account"])
 
         with tab_login:
@@ -84,19 +99,12 @@ def login_screen():
                         else:
                             st.error(msg)
 
-            st.markdown("""
-            <div class="cc-demo-box">
-                <b>🧪 Demo Admin Credentials</b><br>
-                Email: <code>admin@college.com</code><br>
-                Password: <code>admin123</code>
-            </div>
-            """, unsafe_allow_html=True)
-
         with tab_register:
             with st.form("register_form"):
                 name = st.text_input("Full Name")
                 reg_email = st.text_input("Email", key="reg_email")
-                reg_password = st.text_input("Password", type="password", key="reg_password")
+                reg_password = st.text_input("Password", type="password", key="reg_password",
+                                             help="Use at least 8 characters.")
                 confirm_password = st.text_input("Confirm Password", type="password")
                 col1, col2 = st.columns(2)
                 with col1:
@@ -202,4 +210,13 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except ValueError as exc:
+        st.error(str(exc))
+    except (sqlite3.Error, OSError):
+        logging.getLogger(__name__).exception("Database operation failed")
+        st.error(
+            "The database is temporarily unavailable. Please try again shortly. "
+            "If this continues, ask the project owner to check the server logs."
+        )

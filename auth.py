@@ -53,18 +53,19 @@ def valid_email(email: str) -> bool:
 
 
 def register_student(name, email, password, confirm_password, course, year):
+    email = email.strip().lower()
     if not name.strip():
         return False, "Please enter your full name."
     if not valid_email(email):
         return False, "Please enter a valid email address."
-    if len(password) < 4:
-        return False, "Password must be at least 4 characters long."
+    if len(password) < 8:
+        return False, "Password must be at least 8 characters long."
     if password != confirm_password:
         return False, "Passwords do not match."
     if not course.strip():
         return False, "Please enter your course."
     if not year.strip():
         return False, "Please select your year."
-    ok, msg = db.create_user(name.strip(), email.strip().lower(), password, role="student",
+    ok, msg = db.create_user(name.strip(), email, password, role="student",
                               course=course.strip(), year=year.strip())
     return ok, msg

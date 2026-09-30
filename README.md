@@ -1,178 +1,174 @@
-# 🎓 College Club & Event Management System
+# College Club & Event Management
 
-A complete, presentation-ready web application for managing college clubs, events,
-memberships, registrations and announcements — built entirely with **Streamlit** and
-**SQLite**.
+A Streamlit application for college clubs, membership approvals, event registrations,
+announcements and activity reports. Its SQLite database persists data on disk and
+enforces relationships, unique memberships and registrations, and event capacity.
 
----
+Students can create an account, request club membership, register for events, cancel
+registrations and view their profile. Administrators manage clubs, events,
+memberships and announcements, export registrations to CSV, and view analytics.
 
-## 📖 Project Description
+## Run locally
 
-This system lets students discover and join college clubs, browse and register for
-events, and stay updated through announcements. Admins get a full back office to
-create/edit/delete clubs and events, approve or reject membership requests, manage
-event registrations, post announcements, and view analytics — all from one dashboard.
+Install Python 3.9 or newer and Git, then clone the project:
 
----
-
-## ✨ Features
-
-### Student
-- Register and log in
-- Browse clubs and view details
-- Join clubs (membership request goes to "Pending" until approved)
-- Browse upcoming events and register (duplicate/over-capacity registration blocked)
-- View "My Clubs" (with status badges) and "My Events" (with cancel option)
-- View announcements
-- View and track their own profile, joined clubs and registration history
-
-### Admin
-- Dashboard with key metrics and charts
-- Create / edit / delete clubs
-- Create / edit / delete events (with validation)
-- Approve / reject club membership requests
-- View and filter event registrations, export to CSV
-- Post / delete announcements
-- View and search all registered users
-- Analytics page with five Plotly charts (members per club, registrations per
-  event, events per club, monthly registration trend, club popularity ranking)
-
----
-
-## 🧰 Technology Stack
-
-- **Python 3**
-- **Streamlit** — UI framework
-- **SQLite** — embedded database (auto-created on first run)
-- **Pandas** — data handling for tables/charts
-- **Plotly Express** — interactive charts
-- **HTML/CSS** (via `st.markdown`) — custom dark blue/purple theme
-
-No Flask, Django, React, Node.js or external database is used.
-
----
-
-## 📁 Project Structure
-
-```
-college-club-event-management/
-│
-├── app.py                     # Entry point — login, routing, sidebar nav
-├── database.py                # All SQLite schema + CRUD functions
-├── auth.py                    # Session-state auth & registration validation
-├── requirements.txt
-├── README.md
-├── college_management.db      # Auto-created on first run (SQLite file)
-│
-├── app_pages/                 # Page modules (named app_pages, see note below)
-│   ├── student_dashboard.py
-│   ├── clubs.py
-│   ├── events.py
-│   ├── my_clubs.py
-│   ├── my_events.py
-│   ├── announcements.py
-│   ├── profile.py
-│   ├── admin_dashboard.py
-│   ├── manage_clubs.py
-│   ├── manage_events.py
-│   ├── members.py
-│   ├── registrations.py
-│   ├── admin_announcements.py
-│   ├── users.py
-│   └── analytics.py
-│
-└── assets/
-    └── style.css               # Custom dark blue / purple theme
+```sh
+git clone https://github.com/Nikup18/college-club-event-management.git
+cd college-club-event-management
 ```
 
-> **Note on folder naming:** Streamlit automatically turns any folder literally named
-> `pages/` sitting next to the entry script into its own native multi-page navigation
-> menu. Since this app uses its own custom sidebar and login-gated routing, the page
-> modules live in `app_pages/` instead, to avoid clashing with that automatic feature.
+Create and activate a virtual environment. On Windows PowerShell:
 
----
-
-## ⚙️ Installation & How to Run
-
-1. Make sure you have **Python 3.9+** installed.
-2. Open a terminal in the project folder and install dependencies:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. Run the app:
-
-   ```bash
-   streamlit run app.py
-   ```
-
-4. Your browser will open automatically at `http://localhost:8501`.
-
-The SQLite database (`college_management.db`) and sample data (5 clubs, 6 events,
-3 announcements, one demo admin) are created automatically the first time you run
-the app — no manual setup required.
-
----
-
-## 🔑 Demo Credentials
-
-These are also shown directly on the login page.
-
-| Role  | Email               | Password |
-|-------|---------------------|----------|
-| Admin | admin@college.com   | admin123 |
-
-Students can create their own account from the **"Create Student Account"** tab on
-the login page.
-
----
-
-## 🗄️ Database Information
-
-SQLite database file: `college_management.db` (auto-created, relative path — works
-the same on Windows, macOS and Linux).
-
-**Tables:**
-- `users` — id, name, email, password (hashed), role, course, year, created_at
-- `clubs` — id, name, description, category, faculty_coordinator, meeting_day, meeting_time, created_at
-- `club_members` — id, user_id, club_id, status (Pending/Approved/Rejected), joined_at
-- `events` — id, title, description, club_id, date, time, venue, capacity, created_at
-- `event_registrations` — id, event_id, user_id, registered_at
-- `announcements` — id, title, content, created_at
-
-Passwords are hashed with **PBKDF2-HMAC-SHA256** (100,000 iterations, random salt per
-user) using Python's built-in `hashlib` — no compiled third-party crypto dependency,
-so installation stays simple and reliable on Windows. All queries use parameterized
-statements (`?` placeholders) — no raw string concatenation of user input.
-
----
-
-## 🚀 Future Enhancements
-
-- Email notifications for approvals/rejections and event reminders
-- Event check-in via QR codes
-- File uploads for club/event banner images
-- Multi-admin roles with permission levels
-- Waitlists for full events
-- Calendar (.ics) export for registered events
-
----
-
-## ✅ Verified Working
-
-The following have been implemented and tested end-to-end against the SQLite layer:
-account creation, admin & student login (including wrong-password rejection),
-duplicate-account prevention, club creation/edit/delete, joining a club and
-duplicate-request prevention, membership approval, event creation, event
-registration with duplicate- and capacity-blocking, registration cancellation,
-announcements, and dashboard statistics.
-
----
-
-## ▶️ Quick Start
-
-```bash
-pip install -r requirements.txt
-streamlit run app.py
+```powershell
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
 ```
+
+On macOS or Linux:
+
+```sh
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Install dependencies and initialize the database:
+
+```sh
+python -m pip install -r requirements.txt
+python manage_db.py init
+```
+
+Create your administrator account:
+
+```sh
+python manage_db.py create-admin --email admin@college.edu --name "College Admin"
+```
+
+The command prompts for a password and confirmation without displaying them. Use
+at least 12 characters. There is no default administrator or shared password.
+Students register through the app and must choose a password of at least 8 characters.
+
+Start the app and open [localhost:8501](http://localhost:8501):
+
+```sh
+python -m streamlit run app.py
+```
+
+If PowerShell blocks virtual environment activation, use
+`.\.venv\Scripts\python.exe` in place of `python` in the commands above.
+
+## Database setup
+
+The default database is `college_management.db` in the project directory. App
+startup creates an **empty** database automatically if needed; it does not create
+accounts or insert demo records. Database files and backups are local runtime data
+and are excluded from Git. A fresh clone gets its database from the versioned schema.
+
+To use another location, set `COLLEGE_DB_PATH` **before** running any app or database
+command. Relative paths resolve against the project directory; absolute paths work
+too. For example, in PowerShell:
+
+```powershell
+$env:COLLEGE_DB_PATH = "data/college.db"
+```
+
+Or in a macOS/Linux shell:
+
+```sh
+export COLLEGE_DB_PATH="data/college.db"
+```
+
+The [.env.example](.env.example) file documents this setting; `.env` files are not
+loaded automatically. Set the variable in your shell or hosting service.
+
+For an optional demonstration with 5 clubs, 6 upcoming events and 3 announcements:
+
+```sh
+python manage_db.py seed-demo
+```
+
+Demo seeding creates no accounts. It requires empty clubs, events and announcements
+and records completion so rerunning it does not duplicate data. Deleting records
+does not cause the app to reseed them.
+
+## Maintenance and upgrades
+
+Check the database and create a consistent backup:
+
+```sh
+python manage_db.py check
+python manage_db.py backup backups/college-backup.sqlite3
+```
+
+Choose a new filename for each backup. The backup command uses SQLite's backup API
+and refuses to overwrite an existing file. Keep backup copies outside the hosting
+machine as well; they contain account and student information.
+
+Before updating an older checkout, stop the app and make a consistent SQLite
+backup **outside the checkout**. Older versions tracked the database file in Git;
+this release removes it from version control. After updating, set `COLLEGE_DB_PATH`
+to your preserved database before running initialization.
+
+Existing databases from the original project are migrated on startup or with
+`python manage_db.py init`. Before a legacy migration, the app creates a uniquely
+named `.pre-v1.*.bak` backup beside the original database. Valid records and IDs
+are preserved. Invalid records, duplicate relationships, colliding email addresses
+or overbooked events stop the migration instead of silently discarding data.
+
+If upgrading an existing installation, rotate its old demo administrator password
+before making the app accessible to others:
+
+```sh
+python manage_db.py reset-password --email admin@college.com
+```
+
+The prompt requires a new password of at least 12 characters. Existing accounts
+are preserved by migration; updating the code does not change their passwords.
+
+If setup fails, inspect the terminal/server log, back up the original database,
+and follow [database troubleshooting and recovery](docs/database.md#recovery-and-troubleshooting).
+Do not delete the database to resolve an upgrade error.
+
+## Deployment
+
+SQLite is a good fit for this app on **one host with persistent local storage**.
+Store the database on a disk that survives restarts and redeployments, configure
+`COLLEGE_DB_PATH`, and arrange regular backups. Write-ahead logging, foreign keys,
+busy timeouts and transactional registration protect normal concurrent requests.
+SQLite still serializes writers.
+
+Ephemeral hosting storage will lose local data. For several app instances on
+different machines or sustained heavy writes, use a managed PostgreSQL database
+and adapt the database access layer and migrations; setting a PostgreSQL URL in
+`COLLEGE_DB_PATH` does not perform that conversion. Do not share a SQLite file
+between machines over a network filesystem.
+
+## Project layout and development
+
+```text
+app.py                  Streamlit login, navigation and routing
+auth.py                 Session authentication and registration validation
+database.py             Database queries, transactions and password hashing
+db_schema.py            Schema initialization and legacy migration
+migrations/             Versioned SQL schema, constraints and indexes
+manage_db.py            Setup, admin creation, password reset, demo seed, backup and checks
+app_pages/              Student and administrator pages
+assets/style.css        Application theme
+docs/database.md        Data model, constraints, migration and recovery
+tests/                  Automated regression tests
+.github/workflows/      Continuous integration
+```
+
+Page modules use `app_pages/` because Streamlit treats `pages/` as automatic
+navigation, which would conflict with this app's login-gated navigation.
+
+Run the regression suite after installing dependencies:
+
+```sh
+python -m unittest discover -s tests -v
+python -m compileall -q app.py auth.py database.py db_schema.py manage_db.py app_pages tests
+```
+
+GitHub Actions runs these checks on Python 3.9 and 3.13. See the workflow run for
+its status. [Database documentation](docs/database.md) explains the schema and
+operational limits.
